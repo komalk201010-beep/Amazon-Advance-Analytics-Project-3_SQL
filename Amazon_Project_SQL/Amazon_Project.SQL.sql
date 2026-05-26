@@ -1,0 +1,466 @@
+CREATE DATABASE amazon_project;
+USE amazon_project;
+
+
+CREATE TABLE category(category_id INT PRIMARY KEY, category_name VARCHAR(50));
+CREATE TABLE customers(customer_id INT PRIMARY KEY,f_name VARCHAR(50),l_name VARCHAR(50),state VARCHAR(50),address VARCHAR(100));
+CREATE TABLE sellers(seller_id INT PRIMARY KEY,seller_name VARCHAR(100));
+CREATE TABLE products(product_id INT PRIMARY KEY,product_name VARCHAR(100),price DECIMAL(10,2),cogs DECIMAL(10,2),category_id INT,
+FOREIGN KEY(category_id) REFERENCES category(category_id));
+CREATE TABLE orders(order_id INT PRIMARY KEY,order_date DATE,customer_id INT,order_status VARCHAR(30),seller_id INT,
+FOREIGN KEY(customer_id) REFERENCES customers(customer_id),
+FOREIGN KEY(seller_id) REFERENCES sellers(seller_id));
+CREATE TABLE order_items(order_item_id INT PRIMARY KEY,order_id INT,product_id INT,quantity INT,price_per_unit DECIMAL(10,2),total_price DECIMAL(10,2),
+FOREIGN KEY(order_id) REFERENCES orders(order_id),
+FOREIGN KEY(product_id) REFERENCES products(product_id));
+CREATE TABLE payments(payment_id INT PRIMARY KEY,payment_date DATE,payment_mode VARCHAR(30),payment_status VARCHAR(30),order_id INT,
+FOREIGN KEY(order_id) REFERENCES orders(order_id));
+CREATE TABLE shipping(shipping_id INT PRIMARY KEY,order_id INT,delivery_status VARCHAR(30),shipping_date DATE,return_date DATE NULL,
+FOREIGN KEY(order_id) REFERENCES orders(order_id));
+CREATE TABLE inventory(inventory_id INT PRIMARY KEY,product_id INT,stock_remaining INT,warehouse_id INT,restock_date DATE,
+FOREIGN KEY(product_id) REFERENCES products(product_id));
+
+-- ORDERS
+
+INSERT INTO orders (order_id, order_date, customer_id, order_status, seller_id) VALUES
+(1001,'2025-01-05',1,'Delivered',1),
+(1002,'2025-01-08',2,'Pending',2),
+(1003,'2025-01-10',3,'Cancelled',3),
+(1004,'2025-01-12',4,'Returned',4),
+(1005,'2025-01-15',5,'Delivered',5),
+(1006,'2025-01-18',6,'Shipped',6),
+(1007,'2025-01-20',7,'Delivered',7),
+(1008,'2025-01-22',8,'Pending',8),
+(1009,'2025-01-25',9,'Delivered',9),
+(1010,'2025-01-28',10,'Returned',10),
+(1011,'2025-02-02',11,'Delivered',11),
+(1012,'2025-02-04',12,'Shipped',12),
+(1013,'2025-02-06',13,'Delivered',13),
+(1014,'2025-02-09',14,'Pending',14),
+(1015,'2025-02-11',15,'Cancelled',15),
+(1016,'2025-02-13',16,'Delivered',1),
+(1017,'2025-02-16',17,'Returned',2),
+(1018,'2025-02-18',18,'Delivered',3),
+(1019,'2025-02-20',19,'Shipped',4),
+(1020,'2025-02-22',20,'Delivered',5);
+
+
+-- ORDER_ITEMS
+
+INSERT INTO order_items (order_item_id, order_id, product_id, quantity, price_per_unit, total_price) VALUES
+(1,1001,101,1,2500,2500),
+(2,1002,102,2,1200,2400),
+(3,1003,103,1,3400,3400),
+(4,1004,104,3,500,1500),
+(5,1005,105,1,800,800),
+(6,1006,106,2,1500,3000),
+(7,1007,107,1,2200,2200),
+(8,1008,108,2,900,1800),
+(9,1009,109,1,2700,2700),
+(10,1010,110,1,3100,3100),
+(11,1011,111,2,600,1200),
+(12,1012,112,1,4200,4200),
+(13,1013,113,3,700,2100),
+(14,1014,114,1,1500,1500),
+(15,1015,115,2,1800,3600),
+(16,1016,116,1,2600,2600),
+(17,1017,117,2,1100,2200),
+(18,1018,118,1,900,900),
+(19,1019,119,2,1400,2800),
+(20,1020,120,1,5000,5000);
+
+
+-- PAYMENTS
+
+INSERT INTO payments (payment_id, payment_date, payment_mode, payment_status, order_id) VALUES
+(1,'2025-01-05','UPI','Paid',1001),
+(2,'2025-01-08','Card','Pending',1002),
+(3,'2025-01-10','COD','Failed',1003),
+(4,'2025-01-12','UPI','Refunded',1004),
+(5,'2025-01-15','Wallet','Paid',1005),
+(6,'2025-01-18','Card','Paid',1006),
+(7,'2025-01-20','UPI','Paid',1007),
+(8,'2025-01-22','COD','Pending',1008),
+(9,'2025-01-25','Card','Paid',1009),
+(10,'2025-01-28','UPI','Refunded',1010),
+(11,'2025-02-02','Wallet','Paid',1011),
+(12,'2025-02-04','Card','Paid',1012),
+(13,'2025-02-06','UPI','Paid',1013),
+(14,'2025-02-09','COD','Pending',1014),
+(15,'2025-02-11','Card','Failed',1015),
+(16,'2025-02-13','UPI','Paid',1016),
+(17,'2025-02-16','Wallet','Refunded',1017),
+(18,'2025-02-18','Card','Paid',1018),
+(19,'2025-02-20','UPI','Paid',1019),
+(20,'2025-02-22','COD','Paid',1020);
+
+
+-- SHIPPING
+
+INSERT INTO shipping (shipping_id, order_id, delivery_status, shipping_date, return_date) VALUES
+(1,1001,'Delivered','2025-01-06',NULL),
+(2,1002,'Processing','2025-01-09',NULL),
+(3,1003,'Cancelled','2025-01-10',NULL),
+(4,1004,'Returned','2025-01-13','2025-01-20'),
+(5,1005,'Delivered','2025-01-16',NULL),
+(6,1006,'In Transit','2025-01-19',NULL),
+(7,1007,'Delivered','2025-01-21',NULL),
+(8,1008,'Processing','2025-01-23',NULL),
+(9,1009,'Delivered','2025-01-26',NULL),
+(10,1010,'Returned','2025-01-29','2025-02-05'),
+(11,1011,'Delivered','2025-02-03',NULL),
+(12,1012,'In Transit','2025-02-05',NULL),
+(13,1013,'Delivered','2025-02-07',NULL),
+(14,1014,'Processing','2025-02-10',NULL),
+(15,1015,'Cancelled','2025-02-11',NULL),
+(16,1016,'Delivered','2025-02-14',NULL),
+(17,1017,'Returned','2025-02-17','2025-02-24'),
+(18,1018,'Delivered','2025-02-19',NULL),
+(19,1019,'In Transit','2025-02-21',NULL),
+(20,1020,'Delivered','2025-02-23',NULL);
+
+
+-- INVENTORY
+
+INSERT INTO inventory (inventory_id, product_id, stock_remaining, warehouse_id, restock_date) VALUES
+(1,101,25,1,'2025-03-01'),
+(2,102,40,1,'2025-03-02'),
+(3,103,15,2,'2025-03-03'),
+(4,104,50,2,'2025-03-04'),
+(5,105,10,3,'2025-03-05'),
+(6,106,30,1,'2025-03-06'),
+(7,107,18,2,'2025-03-07'),
+(8,108,45,3,'2025-03-08'),
+(9,109,22,1,'2025-03-09'),
+(10,110,12,2,'2025-03-10'),
+(11,111,60,3,'2025-03-11'),
+(12,112,8,1,'2025-03-12'),
+(13,113,35,2,'2025-03-13'),
+(14,114,28,3,'2025-03-14'),
+(15,115,14,1,'2025-03-15'),
+(16,116,26,2,'2025-03-16'),
+(17,117,32,3,'2025-03-17'),
+(18,118,20,1,'2025-03-18'),
+(19,119,17,2,'2025-03-19'),
+(20,120,9,3,'2025-03-20');
+
+-- SOLVING BUSINESS PROBLEMS
+
+-- 6. Find customers who purchased in January but not in February.
+WITH CTE AS (
+SELECT CUSTOMER_ID,
+MAX(CASE WHEN ORDER_DATE <= '2025-01-31' THEN CUSTOMER_ID END) AS CUSTOMERS
+FROM ORDERS
+WHERE CASE WHEN ORDER_DATE <= '2025-01-31' THEN CUSTOMER_ID END IS NOT NULL
+GROUP BY 1
+)
+
+SELECT CUSTOMER_ID 
+FROM CTE;
+
+-- OR
+
+SELECT c.customer_id
+FROM customers c
+LEFT JOIN orders o
+ON c.customer_id = o.customer_id
+AND MONTH(o.order_date)=2
+WHERE o.customer_id IS NULL;
+
+-- OR
+ 
+SELECT customer_id
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+      AND MONTH(o.order_date) = 2
+      AND YEAR(o.order_date) = 2025
+);
+
+-- 7. Find repeat customers who placed more than 1 order within 30 days.
+WITH FIRST_ORDERS AS (
+SELECT DISTINCT CUSTOMER_ID, MIN(ORDER_DATE) AS FIRST_ORDER_DATE
+FROM ORDERS
+GROUP BY 1
+)
+
+SELECT O.CUSTOMER_ID, MIN(O.ORDER_DATE) AS SECOND_ORDER_DATE
+FROM ORDERS O  
+INNER JOIN FIRST_ORDERS F ON O.CUSTOMER_ID = F.CUSTOMER_ID
+WHERE O.ORDER_DATE > FIRST_ORDER_DATE
+AND O.ORDER_DATE < FIRST_ORDER_DATE + INTERVAL 30 DAY
+GROUP BY 1;
+
+-- 8. Which payment mode has the highest failure rate?
+SELECT DISTINCT PAYMENT_MODE FROM PAYMENTS;
+
+SELECT DISTINCT PAYMENT_MODE, 
+COUNT(PAYMENT_STATUS) AS TOTAL_OPTIONS,  
+SUM(CASE WHEN PAYMENT_STATUS = 'FAILED' THEN 1 ELSE 0 END) AS TOTAL_FAILED,
+
+CONCAT(ROUND(SUM(CASE WHEN PAYMENT_STATUS = 'FAILED' THEN 1 ELSE 0 END) * 100 /
+COUNT(PAYMENT_STATUS), 2), '%') AS FAILURE_RATE
+
+FROM PAYMENTS
+GROUP BY PAYMENT_MODE
+ORDER BY 4 DESC
+LIMIT 1;
+
+-- 9. Find products that were sold despite low inventory (<15 units left).
+SELECT 
+	DISTINCT I.PRODUCT_ID, 
+	SUM(OI.QUANTITY) AS TOTAL_SOLD
+	FROM INVENTORY I 
+	INNER JOIN ORDER_ITEMS OI ON I.PRODUCT_ID = OI.PRODUCT_ID
+	WHERE I.STOCK_REMAINING < 15
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- 10. Which state has highest average order value?
+SELECT DISTINCT C.STATE, ROUND(AVG(OI.TOTAL_PRICE), 2) AS AVERAGE_ORDER_VALUE
+FROM CUSTOMERS C 
+STRAIGHT_JOIN 
+ORDERS O ON C.CUSTOMER_ID = O.CUSTOMER_ID
+JOIN 
+ORDER_ITEMS OI ON O.ORDER_ID = OI.ORDER_ID
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- 11. Rank products by revenue within each category.
+WITH PRODUCTS AS (
+SELECT C.CATEGORY_NAME, P.PRODUCT_NAME, SUM(OI.TOTAL_PRICE) AS REVENUE
+FROM CATEGORY C 
+JOIN PRODUCTS P ON C.CATEGORY_ID = P.CATEGORY_ID
+JOIN ORDER_ITEMS OI ON P.PRODUCT_ID = OI.PRODUCT_ID 
+GROUP BY 1,2
+)
+
+SELECT *, 
+DENSE_RANK() OVER (PARTITION BY CATEGORY_NAME ORDER BY REVENUE DESC) AS DRN
+FROM PRODUCTS;
+
+-- 12. Show cumulative monthly revenue over time.
+WITH 
+CTE AS 
+(
+SELECT 
+DATE_FORMAT(O.ORDER_DATE, '%b-%Y') AS MONTHS,
+SUM(OI.TOTAL_PRICE) AS REVENUE
+FROM ORDERS O 
+JOIN ORDER_ITEMS OI ON O.ORDER_ID = OI.ORDER_ID
+GROUP BY 1
+)
+
+SELECT *,
+SUM(REVENUE) OVER (ORDER BY FIELD(MONTHS, 'Jan-2025', 'Feb-2025')) AS CUMULATIVE_REVENUE
+FROM CTE
+ORDER BY FIELD(MONTHS, 'Jan-2025', 'Feb-2025');
+
+-- 13. For each customer, display every order date along with their previous order date.
+SELECT 
+DISTINCT CUSTOMER_ID,
+ORDER_DATE,
+LAG(ORDER_DATE,1) OVER (PARTITION BY CUSTOMER_ID ORDER BY ORDER_DATE) AS PREVIOUS_DATES
+FROM ORDERS
+ORDER BY 1;
+
+-- 14. Find the gap in days between consecutive orders for each customer.
+SELECT 
+DISTINCT CUSTOMER_ID,
+ORDER_DATE,
+NULLIF(ORDER_DATE - LAG(ORDER_DATE,1) OVER (PARTITION BY CUSTOMER_ID ORDER BY ORDER_DATE),0) AS GAP_BETWEEN_FIRST_SECOND_ORDER
+FROM ORDERS
+ORDER BY 1;
+
+-- 15. Find sellers whose monthly revenue increased continuously for at least two consecutive months
+WITH CTE AS 
+(
+SELECT 
+DATE_FORMAT(O.ORDER_DATE, '%1-%m-%Y') AS MONTHS,
+S.SELLER_ID, SUM(OI.TOTAL_PRICE) AS MONTHLY_REVENUE
+FROM ORDERS O 
+JOIN SELLERS S ON O.SELLER_ID = S.SELLER_ID
+JOIN ORDER_ITEMS OI ON O.ORDER_ID = OI.ORDER_ID
+GROUP BY 1,2
+),
+
+GROWTH AS 
+(
+SELECT *,
+CASE 
+WHEN 
+MONTHLY_REVENUE > LAG(MONTHLY_REVENUE, 1) OVER (PARTITION BY SELLER_ID ORDER BY MONTHS) THEN 1 ELSE 0
+END AS GROWTH_OVER_PV_MONTH
+FROM CTE 
+)
+
+SELECT *
+FROM GROWTH
+WHERE GROWTH_OVER_PV_MONTH = 1
+ORDER BY SELLER_ID;
+
+-- 16. Which products are returned most frequently?
+-- ABSOLUTE RETURN
+SELECT P.PRODUCT_ID, P.PRODUCT_NAME,
+COUNT(CASE WHEN S.DELIVERY_STATUS = 'RETURNED' THEN 1 END) AS RETURNED_COUNT
+FROM PRODUCTS P 
+JOIN ORDER_ITEMS O ON P.PRODUCT_ID = O.PRODUCT_ID 
+JOIN SHIPPING S ON O.ORDER_ID = S.ORDER_ID
+GROUP BY 1,2
+HAVING RETURNED_COUNT <> 0;
+
+-- 17. Find average shipping delay by delivery status.
+	WITH DELAY AS 
+	(
+	SELECT S.DELIVERY_STATUS, 
+	DATEDIFF(S.SHIPPING_DATE, O.ORDER_DATE) AS DAYS_GAP
+	FROM SHIPPING S 
+	JOIN ORDERS O ON S.ORDER_ID = O.ORDER_ID
+	)
+
+	SELECT DELIVERY_STATUS,
+	ROUND(AVG(DAYS_GAP),2) AS AVERAGE_ORDER_DELAY
+	FROM DELAY
+	GROUP BY 1;
+
+-- 18. Find products that have never been ordered.
+SELECT 
+P.PRODUCT_ID, P.PRODUCT_NAME, OI.ORDER_ID
+FROM PRODUCTS P 
+LEFT JOIN ORDER_ITEMS OI ON P.PRODUCT_ID = OI.PRODUCT_ID
+WHERE OI.ORDER_ID IS NULL;
+
+-- 19. Find products with high stock but low sales volume.
+SELECT I.PRODUCT_ID, I.stock_remaining, SUM(O.QUANTITY) AS TOTAL_SALES
+FROM INVENTORY I 
+JOIN ORDER_ITEMS O ON I.PRODUCT_ID = O.PRODUCT_ID
+GROUP BY 1,2
+HAVING I.stock_remaining > 45 
+AND TOTAL_SALES < 5;
+
+-- 20. Which warehouse holds the highest inventory value?
+SELECT WAREHOUSE_ID, 
+SUM(STOCK_REMAINING) AS HIGHEST_STOCK
+FROM INVENTORY 
+GROUP BY 1 
+ORDER BY 2 DESC
+LIMIT 1;
+
+-- 21. Segment customers into High, Medium, and Low value based on total spend.
+SELECT CUSTOMER_ID,
+	   CASE 
+		   WHEN TOTAL_SPEND >= 3000 THEN 'HIGH'
+	       WHEN TOTAL_SPEND >= 1500 AND TOTAL_SPEND < 3000 THEN 'MID'
+		   WHEN TOTAL_SPEND < 1500 THEN 'LOW' 
+            END AS SEGMENT
+
+FROM (
+		SELECT 
+        O.CUSTOMER_ID, 
+        SUM(OI.TOTAL_PRICE) AS TOTAL_SPEND
+        FROM ORDERS O JOIN ORDER_ITEMS OI ON O.ORDER_ID = OI.ORDER_ID
+        GROUP BY 1
+) k
+ORDER BY SEGMENT;
+
+
+-- 22. Find each category’s percentage contribution to total revenue.
+SELECT 
+    C.CATEGORY_NAME,
+    CONCAT(ROUND(
+        SUM(OI.TOTAL_PRICE) * 100 /
+        (SELECT SUM(TOTAL_PRICE) FROM ORDER_ITEMS),
+        2), '%') AS PERCENTAGE_CONTRIBUTION
+FROM ORDER_ITEMS OI
+JOIN PRODUCTS P 
+    ON OI.PRODUCT_ID = P.PRODUCT_ID
+JOIN CATEGORY C 
+    ON C.CATEGORY_ID = P.CATEGORY_ID
+GROUP BY C.CATEGORY_NAME
+ORDER BY PERCENTAGE_CONTRIBUTION DESC;
+
+-- 23. Among customers with at least two orders, find the average days between orders.
+WITH ORDERS_CTE AS 
+(
+	SELECT CUSTOMER_ID, MAX(ORDER_DATE) AS LATEST_ORDER_DATE
+    FROM ORDERS
+    GROUP BY CUSTOMER_ID
+),
+
+ALL_DATES AS 
+(
+SELECT OC.CUSTOMER_ID, OC.LATEST_ORDER_DATE, O.ORDER_DATE
+FROM ORDERS_CTE OC 
+JOIN ORDERS O ON OC.CUSTOMER_ID = O.CUSTOMER_ID
+WHERE O.ORDER_DATE < OC.LATEST_ORDER_DATE
+)
+
+SELECT CUSTOMER_ID, ROUND(AVG(DATEDIFF(LATEST_ORDER_DATE, ORDER_DATE)), 2) AS AVG_DAYS_BETWEEN_TWO_ORDERS
+FROM ALL_DATES
+GROUP BY CUSTOMER_ID
+ORDER BY AVG_DAYS_BETWEEN_TWO_ORDERS DESC;
+
+-- 24. Find customers who ordered before but have not placed any order in the last 30 days of the dataset.
+SELECT CUSTOMER_ID, MAX(ORDER_DATE) AS LAST_ORDER_DATE
+FROM ORDERS
+GROUP BY 1
+HAVING LAST_ORDER_DATE < CURRENT_DATE() - INTERVAL 30 DAY;
+
+-- 25. Find customers who placed two or more orders on the same day.
+SELECT CUSTOMER_ID, ORDER_DATE, COUNT(*) AS NUMBER_OF_ORDERS_IN_ONE_DAY
+FROM ORDERS
+GROUP BY 1,2
+HAVING NUMBER_OF_ORDERS_IN_ONE_DAY >= 2;
+
+-- 26. Calculate monthly net revenue after accounting for refunds.
+SELECT 
+	DATE_FORMAT(P.PAYMENT_DATE, '%b-%Y') AS MONTHS,
+	ROUND(SUM(TOTAL_PRICE) - 
+	SUM(CASE WHEN P.PAYMENT_STATUS = 'Refunded' THEN OI.TOTAL_PRICE END), 2) AS NET_REVENUE_EARNED
+FROM PAYMENTS P 
+JOIN ORDER_ITEMS OI 
+ON P.ORDER_ID = OI.ORDER_ID
+GROUP BY 1;
+
+
+-- 27. Which seller has the highest revenue per successful order?
+SELECT S.SELLER_ID, 
+	SUM(CASE WHEN P.PAYMENT_STATUS = 'Paid' THEN OI.TOTAL_PRICE END) AS TOTAL_SUCCESSFUL_PAYMENT
+FROM SELLERS S 
+JOIN ORDERS O ON S.SELLER_ID = O.SELLER_ID
+JOIN PAYMENTS P ON O.ORDER_ID = P.ORDER_ID
+JOIN ORDER_ITEMS OI ON P.ORDER_ID = OI.ORDER_ID
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 2;
+
+
+
+-- 29. For each category, compare its average order value with the overall average order value.
+SELECT C.CATEGORY_NAME, ROUND(AVG(OI.TOTAL_PRICE), 2) AS AOV
+FROM CATEGORY C
+JOIN PRODUCTS P ON C.CATEGORY_ID = P.CATEGORY_ID 
+JOIN ORDER_ITEMS OI ON P.PRODUCT_ID = OI.PRODUCT_ID
+WHERE OI.TOTAL_PRICE >= (
+							SELECT AVG(TOTAL_PRICE) AS OVERALL_AOV
+                            FROM ORDER_ITEMS
+						)
+GROUP BY C.CATEGORY_NAME
+ORDER BY ROUND(AVG(OI.TOTAL_PRICE), 2) DESC;
+
+
+-- 30. Create an RFM table for every customer.
+SELECT 
+    O.CUSTOMER_ID,
+
+    DATEDIFF(CURRENT_DATE, MAX(O.ORDER_DATE)) AS RECENCY,
+    COUNT(DISTINCT O.ORDER_ID) AS FREQUENCY,
+    SUM(OI.TOTAL_PRICE) AS MONETARY
+
+FROM ORDERS O
+JOIN ORDER_ITEMS OI ON O.ORDER_ID = OI.ORDER_ID
+GROUP BY O.CUSTOMER_ID;
+
+-- END OF THE PROJECT
