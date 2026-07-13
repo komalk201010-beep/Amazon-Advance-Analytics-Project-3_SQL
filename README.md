@@ -249,5 +249,3 @@ This project is part of my Business Analytics portfolio and demonstrates the app
 **Komal**
 
 Business Analytics | SQL | Python | Excel | Power BI
-
-LinkedIn: *Add your LinkedIn profile here*
