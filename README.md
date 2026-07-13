@@ -1,140 +1,253 @@
-# Amazon SQL Analysis Project
+# Amazon Advanced Analytics Project using SQL
 
-## Project Overview
-This project is an end-to-end SQL analysis of an Amazon-style e-commerce database.  
-The project focuses on solving real-world business problems related to customers, orders, payments, inventory, shipping, and seller performance using MySQL.
+## Overview
 
----
+This project demonstrates how SQL can be leveraged to solve real-world business problems in an Amazon-style e-commerce environment. Instead of focusing solely on database queries, the project applies advanced SQL techniques to analyze customer behavior, sales performance, payment trends, inventory management, shipping operations, and seller performance.
 
-## Database Design
-
-The database consists of the following tables:
-
-- Customers
-- Orders
-- Order Items
-- Products
-- Category
-- Payments
-- Shipping
-- Sellers
-- Inventory
-
-The schema was designed using primary keys and foreign key relationships to simulate a real e-commerce ecosystem.
+The database simulates an end-to-end e-commerce ecosystem consisting of customers, orders, products, payments, shipping, sellers, and inventory. Using MySQL, the project transforms transactional data into actionable business insights that support data-driven decision making.
 
 ---
 
-## Objectives
+## Business Objective
 
-The project aims to answer important business questions such as:
+Modern e-commerce platforms generate large volumes of transactional data every day. The objective of this project is to analyze this data to answer key business questions such as:
 
-- Customer retention analysis
-- Repeat customer behavior
-- Payment failure analysis
-- Revenue trend analysis
-- Inventory management insights
-- Seller performance evaluation
-- Product return analysis
-- Customer segmentation using RFM analysis
+- Which customers generate the highest value?
+- Which products contribute the most revenue?
+- Which sellers consistently improve performance?
+- How do refunds impact net revenue?
+- Which products require inventory attention?
+- How can customer purchasing behavior be leveraged for better retention?
 
 ---
 
-## SQL Concepts Used
+## Database Schema
 
-This project demonstrates:
+The project consists of nine interconnected tables representing different components of an e-commerce platform.
 
-- JOINS
-- Common Table Expressions (CTEs)
-- Window Functions
-- Aggregate Functions
-- CASE Statements
-- Subqueries
-- GROUP BY & HAVING
-- Date Functions
-- Ranking Functions
-- Customer Segmentation Logic
+| Table | Description |
+|--------|-------------|
+| Customers | Customer information |
+| Orders | Order details |
+| Order Items | Products purchased in each order |
+| Products | Product catalog |
+| Category | Product categories |
+| Payments | Payment method and status |
+| Shipping | Shipping and return information |
+| Sellers | Seller details |
+| Inventory | Product stock availability |
+
+The database is designed using **Primary Keys** and **Foreign Keys** to maintain relational integrity and simulate a production-ready transactional database.
+
+---
+
+## Project Workflow
+
+```text
+Raw Business Data
+        │
+        ▼
+Database Design
+        │
+        ▼
+Data Validation
+        │
+        ▼
+Advanced SQL Analysis
+        │
+        ▼
+Business Insights
+        │
+        ▼
+Decision Support
+```
 
 ---
 
 ## Business Problems Solved
 
 ### Customer Analytics
-- Customers who ordered in January but not February
-- Repeat customers within 30 days
-- Customers inactive in last 30 days
-- RFM customer segmentation
+
+- Customers who purchased in January but not in February
+- Repeat customers placing multiple orders within 30 days
+- Customers inactive during the last 30 days
+- Customer segmentation based on spending
+- Complete RFM (Recency, Frequency, Monetary) analysis
+- Average time between consecutive customer orders
+
+---
 
 ### Revenue Analytics
-- Monthly cumulative revenue
-- Net revenue after refunds
-- Category contribution to revenue
-- Average order value analysis
+
+- Monthly cumulative revenue trends
+- Monthly net revenue after refunds
+- Average order value by state
+- Category-wise revenue contribution
+- Category average order value compared with overall average
+- Seller revenue per successful order
+
+---
 
 ### Product & Inventory Analytics
-- Products with low inventory but high sales
-- Products never ordered
-- Most returned products
-- High stock but low sales products
 
-### Seller Analytics
-- Seller revenue performance
-- Continuous monthly seller growth
+- Products sold despite low inventory
+- Products never ordered
+- Products with high inventory but low sales
+- Most frequently returned products
+- Warehouse with the highest inventory value
+
+---
+
+### Seller Performance Analytics
+
+- Monthly seller revenue
+- Sellers showing continuous revenue growth
+- Seller performance ranking
+
+---
 
 ### Shipping & Operations Analytics
-- Average shipping delays
+
+- Average shipping delay
 - Return order analysis
+- Delivery status performance
 
 ---
 
-## Sample Query
-```
--- For each category, compare its average order value with the overall average order value.
-SELECT 
-      C.CATEGORY_NAME, 
-      ROUND(AVG(OI.TOTAL_PRICE), 2) AS AOV
-FROM CATEGORY C
-  JOIN PRODUCTS P ON C.CATEGORY_ID = P.CATEGORY_ID 
-  JOIN ORDER_ITEMS OI ON P.PRODUCT_ID = OI.PRODUCT_ID
-WHERE OI.TOTAL_PRICE >= (
-		         SELECT AVG(TOTAL_PRICE) AS OVERALL_AOV
-                            FROM ORDER_ITEMS
-			)
+## Advanced SQL Concepts Demonstrated
+
+This project showcases intermediate to advanced SQL techniques including:
+
+- Common Table Expressions (CTEs)
+- Window Functions
+- LAG()
+- DENSE_RANK()
+- Aggregate Functions
+- CASE Statements
+- Correlated & Nested Subqueries
+- Joins (INNER, LEFT)
+- GROUP BY & HAVING
+- Date Functions
+- Conditional Aggregation
+- Customer Segmentation
+- Revenue Analysis
+- Ranking & Running Totals
+
+---
+
+## Analytical Highlights
+
+This project applies SQL to solve business-oriented analytical problems rather than simple database queries.
+
+Key analytical techniques include:
+
+- Customer retention analysis
+- Repeat purchase analysis
+- Payment failure analysis
+- Revenue trend reporting
+- Inventory optimization
+- Return analysis
+- Seller performance evaluation
+- Warehouse inventory analysis
+- Customer value segmentation
+- RFM customer profiling
+
+---
+
+## Sample Business Query
+
+```sql
+-- Find each category's percentage contribution to total revenue
+
+SELECT
+    C.CATEGORY_NAME,
+    CONCAT(
+        ROUND(
+            SUM(OI.TOTAL_PRICE) * 100 /
+            (SELECT SUM(TOTAL_PRICE) FROM ORDER_ITEMS),
+        2),
+    '%') AS PERCENTAGE_CONTRIBUTION
+FROM ORDER_ITEMS OI
+JOIN PRODUCTS P
+    ON OI.PRODUCT_ID = P.PRODUCT_ID
+JOIN CATEGORY C
+    ON C.CATEGORY_ID = P.CATEGORY_ID
 GROUP BY C.CATEGORY_NAME
-ORDER BY ROUND(AVG(OI.TOTAL_PRICE), 2) DESC;
+ORDER BY PERCENTAGE_CONTRIBUTION DESC;
 ```
 
 ---
 
-## Key Insights
+## Skills Demonstrated
 
-- Certain payment methods showed higher failure rates.
-- Some products experienced high sales despite low inventory.
-- Refunds significantly affected monthly net revenue.
-- Customer spending patterns helped identify high-value customers.
+- SQL Programming
+- Business Analytics
+- Data Analysis
+- Relational Database Design
+- Customer Analytics
+- Revenue Analytics
+- Inventory Analysis
+- Sales Analytics
+- Window Functions
+- Data Transformation
+- Business Intelligence
 
 ---
 
-## Tools Used
+## Technologies Used
 
 - MySQL
 - MySQL Workbench
+- Git
 - GitHub
 
 ---
 
-## Project Structure
+## Repository Structure
 
 ```text
-amazon-sql-analysis-project/
+Amazon-Advance-Analytics-Project-3_SQL/
 │
 ├── amazon_project.sql
 ├── README.md
-└── screenshots/
+└── Dataset
 ```
+
+---
+
+## Learning Outcomes
+
+Through this project, I strengthened my ability to:
+
+- Design and query relational databases
+- Solve complex business problems using SQL
+- Apply advanced analytical SQL techniques
+- Build reusable analytical queries
+- Convert transactional data into actionable business insights
+- Perform customer and revenue analytics for business decision-making
+
+---
+
+## Future Enhancements
+
+- Develop an interactive Power BI dashboard
+- Build SQL Views for automated reporting
+- Implement Stored Procedures and Triggers
+- Add predictive sales forecasting using Python
+- Extend customer segmentation with machine learning techniques
+
+---
+
+## About the Project
+
+This project is part of my Business Analytics portfolio and demonstrates the application of SQL to solve real-world analytical problems across customer behavior, revenue optimization, inventory management, logistics, and seller performance in an e-commerce setting.
 
 ---
 
 ## Author
 
-Komal  
-Data and Business Analyst
+**Komal**
+
+Business Analytics | SQL | Python | Excel | Power BI
+
+LinkedIn: *Add your LinkedIn profile here*
